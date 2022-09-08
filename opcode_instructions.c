@@ -1,70 +1,60 @@
-#ifndef MONTY
-#define MONTY
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <ctype.h>
+#include "monty.h"
 
 /**
- * struct stack_s - doubly linked list representation of a stack (or queue)
- * @n: integer
- * @prev: points to the previous element of the stack (or queue)
- * @next: points to the next element of the stack (or queue)
+ * _push - pushes an element to the stack
  *
- * Description: doubly linked list node structure
- * for stack, queues, LIFO, FIFO Holberton project
+ * @doubly: head of the linked list
+ * @cline: line number
+ * Return: no return
  */
-typedef struct stack_s
+void _push(stack_t **doubly, unsigned int cline)
 {
-	int n;
-	struct stack_s *prev;
-	struct stack_s *next;
-} stack_t;
+	int n, j;
+
+	if (!vglo.arg)
+	{
+		dprintf(2, "L%u: ", cline);
+		dprintf(2, "usage: push integer\n");
+		free_vglo();
+		exit(EXIT_FAILURE);
+	}
+
+	for (j = 0; vglo.arg[j] != '\0'; j++)
+	{
+		if (!isdigit(vglo.arg[j]) && vglo.arg[j] != '-')
+		{
+			dprintf(2, "L%u: ", cline);
+			dprintf(2, "usage: push integer\n");
+			free_vglo();
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	n = atoi(vglo.arg);
+
+	if (vglo.lifo == 1)
+		add_dnodeint(doubly, n);
+	else
+		add_dnodeint_end(doubly, n);
+}
 
 /**
- * struct globals - global structure to use in the functions
- * @lifo: is stack or queue
- * @cont: current line
- * @arg: second parameter inside the current line
- * @head: doubly linked list
- * @fd: file descriptor
- * @buffer: input text
+ * _pall - prints all values on the stack
  *
- * Description: doubly linked list node structure
- * for stack, queues, LIFO, FIFO Holberton project
+ * @doubly: head of the linked list
+ * @cline: line numbers
+ * Return: no return
  */
-typedef struct globals
+void _pall(stack_t **doubly, unsigned int cline)
 {
-	int lifo;
-	unsigned int cont;
-	char  *arg;
-	stack_t *head;
-	FILE *fd;
-	char *buffer;
-} global_t;
+	stack_t *aux;
+	(void)cline;
 
-/**
- * struct instruction_s - opcode and its function
- * @opcode: the opcode
- * @f: function to handle the opcode
- *
- * Description: opcode and its function
- * for stack, queues, LIFO, FIFO Holberton project
- */
-typedef struct instruction_s
-{
-	char *opcode;
-	void (*f)(stack_t **stack, unsigned int line_number);
-} instruction_t;
+	aux = *doubly;
 
-extern global_t vglo;
-
-/* opcode_instructuions*/
-void _push(stack_t **stack, unsigned int line_number);
-void _pall(stack_t **stack, unsigned int line_number);
-
-#endif
+	while (aux)
+	{
+		printf("%d\n", aux->n);
+		aux = aux->next;
+	}
+}
