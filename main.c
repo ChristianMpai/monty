@@ -44,7 +44,7 @@ FILE *check_input(int argc, char *argv[])
 
 	if (argc == 1 || argc > 2)
 	{
-		vprintf(2, "USAGE: monty file\n");
+		dprintf(2, "USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
 
